@@ -151,13 +151,14 @@ function getSpeech(e){
       recognition.start()
 }
 
-function postTranslation(e){
+function postTranslation(){
+    // console.log(e.target)
     console.log('bye')
 }
 
 function showMessage(message){
     let messageList = document.getElementById('message-list')
-    let messageUser
+    // let messageUser
     fetch(`${USERS_URL}/${message.user_id}`)
     .then(res => res.json())
     .then(json => {
@@ -175,7 +176,8 @@ function submitMessage(e){
             "Accept": "application/json"
         }, 
         body: JSON.stringify({user_id: id, channel_id: channelId, speech: newMessage})
-    })
+    }).then(res => res.json())
+    .then(showMessage)
 }
 
 function deleteChannel(e){
