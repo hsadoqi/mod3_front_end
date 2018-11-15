@@ -1,12 +1,33 @@
 document.addEventListener("DOMContentLoaded", () => {
-const CHANNELS_URL = 'http://localhost:3000/channels'
-const MESSAGES_URL = 'http://localhost:3000/messages'
-const USERS_URL = 'http://localhost:3000/users'
+const CHANNELS_URL = 'http://10.39.107.235:3000/channels'
+const MESSAGES_URL = 'http://10.39.107.235:3000/messages'
+const USERS_URL = 'http://10.39.107.235:3000/users'
 const body = document.querySelector('body')
 let id
 let newMessage
+let username
 
-function signin(){
+function openConnection() {
+    return new WebSocket("ws://10.39.107.235:3000/cable")
+    // return new WebSocket("ws://10.39.109.17:3000/cable")
+  }
+
+  const chatWebSocket = openConnection()
+  chatWebSocket.onopen = (event) => {
+    const subscribeMsg = {"command":"subscribe","identifier":"{\"channel\":\"RoomChannel\"}"}
+    chatWebSocket.send(JSON.stringify(subscribeMsg))
+  }
+
+  chatWebSocket.onmessage = event => {
+    const result = JSON.parse(event.data)
+    // console.log(typeof result.message)
+    if(typeof result.message === "object"){
+        showMessage(result.message)
+    } 
+  }
+
+
+function welcome(){
     document.addEventListener("click", doThings)
 
     body.innerHTML = `<h1> Welcome! </h1>`
@@ -35,6 +56,7 @@ function searchForUser(value){
         for(let i in json){
             if(json[i].username === value){
                 id = json[i].id
+                username = json[i].username
                 init()
             } else {
                 createNewUser
@@ -62,6 +84,7 @@ function createNewUser(e){
         }).then(res => res.json())
         .then(json => {
             id = json.id
+            username = json.username
             init()
         })
     })
@@ -90,7 +113,6 @@ function displayChannel(channel){
     channelList.innerHTML += `<li data-id="${channel.id}" id="${channel.name}">${channel.name}
     <button id="join-channel" data-id="${channel.id}">Click to Join Channel!</button>
     <button id="delete-channel" data-id="${channel.id}">Delete channel</button></li>`
-
 }
 
 function doThings(e){
@@ -111,7 +133,7 @@ function doThings(e){
 }
 
 function setChannel(e){
-    console.log(id)
+    // console.log(id)
     let channelId = e.target.parentElement.dataset.id
     body.innerHTML = `<h1 data-id="${channelId}">${e.target.parentElement.id}</h1>
     <div id="message-list"></div>`
@@ -151,33 +173,52 @@ function getSpeech(e){
       recognition.start()
 }
 
-function postTranslation(){
-    // console.log(e.target)
-    console.log('bye')
-}
+// function postTranslation(){
+//     // console.log(e.target)
+//     console.log('bye')
+// }
 
 function showMessage(message){
     let messageList = document.getElementById('message-list')
+    console.log(message)
     // let messageUser
+    // cannot show message once it's sent through the websocket
     fetch(`${USERS_URL}/${message.user_id}`)
     .then(res => res.json())
     .then(json => {
         messageList.innerHTML += `<h3>${json.username}</h3>
         <p data-id="${message.id}">${message.translation}</p>`
     })
+    // console.log(id)
 }
-
 function submitMessage(e){
     let channelId = e.target.parentElement.dataset.id
-    fetch(MESSAGES_URL, {
-        method: "POST", 
-        headers: {
-            "Content-Type": "application/json",
-            "Accept": "application/json"
-        }, 
-        body: JSON.stringify({user_id: id, channel_id: channelId, speech: newMessage})
-    }).then(res => res.json())
-    .then(showMessage)
+    let speechInput = document.getElementById('speech-input')
+    speechInput.value = ""
+
+    const msg = {
+        "command":"message",
+        "identifier":"{\"channel\":\"RoomChannel\"}",
+        "data":`{
+          \"action\": \"send_text\",
+          \"speech\": \"${newMessage}\",
+          \"user_id\": \"${id}\",
+          \"channel_id\": \"${channelId}\",
+          \"username\": \"${username}\"
+        }`
+      }
+      
+      chatWebSocket.send(JSON.stringify(msg))
+    //   showNewMessage(newMessage)
+    // fetch(MESSAGES_URL, {
+    //     method: "POST", 
+    //     headers: {
+    //         "Content-Type": "application/json",
+    //         "Accept": "application/json"
+    //     }, 
+    //     body: JSON.stringify({user_id: id, channel_id: channelId, speech: newMessage})
+    // })
+    // showMessage()
 }
 
 function deleteChannel(e){
@@ -188,6 +229,6 @@ function deleteChannel(e){
     })
 }
 
-signin()
+welcome()
 
 })
