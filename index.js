@@ -1,14 +1,15 @@
 document.addEventListener("DOMContentLoaded", () => {
-const CHANNELS_URL = 'http://10.39.107.235:3000/channels'
-const MESSAGES_URL = 'http://10.39.107.235:3000/messages'
-const USERS_URL = 'http://10.39.107.235:3000/users'
+const CHANNELS_URL = 'http://10.39.109.36:3000/channels'
+const MESSAGES_URL = 'http://10.39.109.36:3000/messages'
+const USERS_URL = 'http://10.39.109.36:3000/users'
 const body = document.querySelector('body')
 let id
 let newMessage
 let username
+let head = document.querySelector('head')
 
 function openConnection() {
-    return new WebSocket("ws://10.39.107.235:3000/cable")
+    return new WebSocket("ws://10.39.109.36:3000/cable")
     // return new WebSocket("ws://10.39.109.17:3000/cable")
   }
 
@@ -28,6 +29,10 @@ function openConnection() {
 
 function welcome(){
     document.addEventListener("click", doThings)
+    // head.innerHTML += `<style>
+    // body {background: url("https://ied.eu/wp-content/uploads/2017/05/language.jpg")}
+    // </style>`
+    body.style.background = "url('https://ied.eu/wp-content/uploads/2017/05/language.jpg')"
     body.innerHTML = `<h1> Welcome! </h1>`
     body.innerHTML += `<button id="sign-in">Sign In</button>
     <button id="create-username">New User</button>`
@@ -36,9 +41,9 @@ function welcome(){
 }
 
 function signInUser(e){
-    body.innerHTML = `<h1>Please Enter Username</h1>
+    body.innerHTML = `<div style="text-align:center"><h1>Please Enter Username</h1>
     <input id="enter-username"></input>
-    <button id="submit-username">Submit</button>`
+    <button id="submit-username">Submit</button></div>`
     let input = document.getElementById('enter-username')
     let button = document.getElementById('submit-username')
     button.addEventListener('click', function(){
@@ -97,6 +102,7 @@ function init(){
         </div>
         <button id="create-channel">Create New Channel</button>
     </blockquote>`
+    body.style.background = "rgb(255, 255, 255)"
 
     fetch(CHANNELS_URL)
     .then(res => res.json())
@@ -146,6 +152,12 @@ function createChannel(e){
         <button type="submit" class="submit-btn"><Submit></button>
     </form>`
 
+//     <blockquote class="blockquote">
+//     <p class="mb-0">${quote.quote}</p>
+//     <footer class="blockquote-footer">${quote.author}</footer>
+//     <br>
+//     <button class='btn-success'">Likes: <span>${quote.likes}</span></button>
+//     <button class='btn-danger'>Delete</button>
 //    <form id="edit-quote-form" style=display:none>
 //     <div class="form-group">
 //       <label for="edit-quote">Edit Quote</label>
@@ -163,7 +175,7 @@ function createChannel(e){
     newChannel(e)
 }
 
-function newChannel(e)[
+function newChannel(e){
     fetch(CHANNElS_URL, {
         method: "POST", 
         headers: {
@@ -173,19 +185,19 @@ function newChannel(e)[
         body: JSON.stringify({name: hello})
     }).then(res => res.json())
     .then(console.log)
-]
-
-function asd(e){
-    // debugger
-    if(e.target.previousElementSibling.style.display === "block"){
-        e.target.previousElementSibling.style.display = "none"
-    // document.getElementById("asd").style.display="none";
-    } else {
-        e.target.previousElementSibling.style.display = "block"
-        // console.log('hi')
-        createChannel(e)
-    }
 }
+
+// function asd(e){
+//     // debugger
+//     if(e.target.previousElementSibling.style.display === "block"){
+//         e.target.previousElementSibling.style.display = "none"
+//     // document.getElementById("asd").style.display="none";
+//     } else {
+//         e.target.previousElementSibling.style.display = "block"
+//         // console.log('hi')
+//         createChannel(e)
+//     }
+// }
 
 function setChannel(e){
     // console.log(id)
@@ -207,30 +219,12 @@ function setChannel(e){
         console.log(sortedMessages)
     })
 
-    // json.messages.sort(function(a, b){
-    //     let dateA=new Date(a.created_at), dateB=new Date(b.created_at)
-    //     return dateA-dateB //sort by date ascending
-    // })
 
     body.innerHTML += `<div id="speech-content" data-id="${channelId}">
     <textarea id="speech-input"></textarea>
     <button id="get-speech">Speak</button>
     <button id="submit-speech">Translate</button></div>`
 }
-
-function compare(a, b){
-    let dateA = new Date(a.created_at)
-    let dateB = new Date(b.created_at)
-
-    let comparison = 0 
-    if(dateA > dateB){
-        comparison = 1
-    } else if (dateA < dateB){
-        comparison = -1
-    }
-    return comparison
-}
-
 
 
 function getSpeech(e){
@@ -272,14 +266,6 @@ function showMessage(message){
 
     messageList.innerHTML += `<h3>${message.username}</h3><p>${newDateTime}</p>
     <p data-id="${message.id}">${message.translation}</p>`
-    // fetch(`${USERS_URL}/${message.user_id}`)
-    // .then(res => res.json())
-    // .then(json => {
-    //     // console.log(message)
-    //     messageList.innerHTML += `<h3>${json.username}</h3><p>${newDateTime}</p>
-    //     <p data-id="${message.id}">${message.translation}</p>`
-    // })
-    // console.log(id)
 }
 
 function submitMessage(e){
@@ -300,16 +286,6 @@ function submitMessage(e){
       }
       
       chatWebSocket.send(JSON.stringify(msg))
-    //   showNewMessage(newMessage)
-    // fetch(MESSAGES_URL, {
-    //     method: "POST", 
-    //     headers: {
-    //         "Content-Type": "application/json",
-    //         "Accept": "application/json"
-    //     }, 
-    //     body: JSON.stringify({user_id: id, channel_id: channelId, speech: newMessage})
-    // })
-    // showMessage()
 }
 
 function deleteChannel(e){
