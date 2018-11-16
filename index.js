@@ -26,14 +26,11 @@ function openConnection() {
     } 
   }
 
-
 function welcome(){
     document.addEventListener("click", doThings)
-
     body.innerHTML = `<h1> Welcome! </h1>`
     body.innerHTML += `<button id="sign-in">Sign In</button>
     <button id="create-username">New User</button>`
-
     let signInButton = document.getElementById('sign-in')
     signInButton.addEventListener('click', signInUser)
 }
@@ -92,12 +89,14 @@ function createNewUser(e){
 
 function init(){
     body.innerHTML = ` <h1>Channels</h1>
-    <div>
-        <ul id="channel-list">
-        </ul>
+    <div id="channel-container">
+        <ul id="channel-list"></ul>
     </div>
-
-    <button>Create New Channel</button>`
+    <blockquote class="blockquote">
+        <div class="form-collection">
+        </div>
+        <button id="create-channel">Create New Channel</button>
+    </blockquote>`
 
     fetch(CHANNELS_URL)
     .then(res => res.json())
@@ -107,9 +106,7 @@ function init(){
 }
 
 function displayChannel(channel){
-
     const channelList = document.getElementById('channel-list')
-
     channelList.innerHTML += `<li data-id="${channel.id}" id="${channel.name}">${channel.name}
     <button id="join-channel" data-id="${channel.id}">Click to Join Channel!</button>
     <button id="delete-channel" data-id="${channel.id}">Delete channel</button></li>`
@@ -129,6 +126,64 @@ function doThings(e){
         submitMessage(e)
     } else if(e.target.id === 'create-username'){
         createNewUser(e)
+    } else if(e.target.id === 'create-channel'){
+        createChannel(e)
+    }
+}
+
+function createChannel(e){
+    let div = document.getElementsByClassName('form-collection')
+    // let createChannel = document.getElementById('create-channel')
+    div.innerHTML += `<form id="create-new-channel" style=display:none>
+        <div class="form-group">
+            <label for="new-channel">Name of Channel</label>
+            <input type="text" class="form-control" id="new-channel">
+        </div>
+        <div class="form-group">
+            <label for="language" id="new-language">
+            <input type="text" class="form-control" id="new-language">
+        </div>
+        <button type="submit" class="submit-btn"><Submit></button>
+    </form>`
+
+//    <form id="edit-quote-form" style=display:none>
+//     <div class="form-group">
+//       <label for="edit-quote">Edit Quote</label>
+//       <input type="text" class="form-control" id="edit-quote" placeholder="Learn. Love. Code.">
+//     </div>
+//     <div class="form-group">
+//       <label for="Author">Author</label>
+//       <input type="text" class="form-control" id="edit-author" placeholder="Flatiron School">
+//     </div>
+//     <button type="submit" class="btn btn-primary">Submit</button>
+//   </form>
+//       <button class="edit-button">Edit</button>
+//   </blockquote>
+    console.log(div)
+    newChannel(e)
+}
+
+function newChannel(e)[
+    fetch(CHANNElS_URL, {
+        method: "POST", 
+        headers: {
+            "Content-Type": 'application/json', 
+            "Accept": 'application/json'
+        }, 
+        body: JSON.stringify({name: hello})
+    }).then(res => res.json())
+    .then(console.log)
+]
+
+function asd(e){
+    // debugger
+    if(e.target.previousElementSibling.style.display === "block"){
+        e.target.previousElementSibling.style.display = "none"
+    // document.getElementById("asd").style.display="none";
+    } else {
+        e.target.previousElementSibling.style.display = "block"
+        // console.log('hi')
+        createChannel(e)
     }
 }
 
@@ -141,61 +196,97 @@ function setChannel(e){
     fetch(`${CHANNELS_URL}/${channelId}`)
     .then(res => res.json())
     .then(json => {
-        json.messages.forEach(showMessage)
+        // console.log(json.messages)
+        let sortedMessages = json.messages.sort(function(a, b){
+            let dateA = new Date(a.created_at)
+            let dateB = new Date(b.created_at)
+            return dateA - dateB //sort by date ascending
+        })
+        // json.messages.sort(compare)
+        sortedMessages.forEach(showMessage)
+        console.log(sortedMessages)
     })
 
-    body.innerHTML += `
-    <div id="speech-content" data-id="${channelId}"><textarea id="speech-input"></textarea>
+    // json.messages.sort(function(a, b){
+    //     let dateA=new Date(a.created_at), dateB=new Date(b.created_at)
+    //     return dateA-dateB //sort by date ascending
+    // })
+
+    body.innerHTML += `<div id="speech-content" data-id="${channelId}">
+    <textarea id="speech-input"></textarea>
     <button id="get-speech">Speak</button>
     <button id="submit-speech">Translate</button></div>`
 }
 
+function compare(a, b){
+    let dateA = new Date(a.created_at)
+    let dateB = new Date(b.created_at)
+
+    let comparison = 0 
+    if(dateA > dateB){
+        comparison = 1
+    } else if (dateA < dateB){
+        comparison = -1
+    }
+    return comparison
+}
+
+
+
 function getSpeech(e){
     window.SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition
-
-      const recognition = new SpeechRecognition()
+    const recognition = new SpeechRecognition()
+      
       recognition.interimResults = true
 
       let speech = document.getElementById('speech-input')
       let channelId = speech.parentElement.dataset.id
 
-      recognition.addEventListener('result', e => {
+    recognition.addEventListener('result', e => {
+          
         const transcript = Array.from(e.results)
           .map(result => result[0])
           .map(result => result.transcript)
           .join('')
 
-          speech.textContent = transcript
-            newMessage = speech.value
+          console.log(transcript)
+        // try something here
+        speech.value = transcript
+        newMessage = speech.value
+    })
 
-          })
-          
-      recognition.start()
+    recognition.start()
+
+    recognition.onspeechend = (e) => {
+        console.log(e)
+        recognition.stop()
+    }
 }
 
-// function postTranslation(){
-//     // console.log(e.target)
-//     console.log('bye')
-// }
 
 function showMessage(message){
     let messageList = document.getElementById('message-list')
+    let newDateTime = new Date(message.created_at).toLocaleString()
+    console.log(newDateTime)
     console.log(message)
-    // let messageUser
-    // cannot show message once it's sent through the websocket
-    fetch(`${USERS_URL}/${message.user_id}`)
-    .then(res => res.json())
-    .then(json => {
-        messageList.innerHTML += `<h3>${json.username}</h3>
-        <p data-id="${message.id}">${message.translation}</p>`
-    })
+
+    messageList.innerHTML += `<h3>${message.username}</h3><p>${newDateTime}</p>
+    <p data-id="${message.id}">${message.translation}</p>`
+    // fetch(`${USERS_URL}/${message.user_id}`)
+    // .then(res => res.json())
+    // .then(json => {
+    //     // console.log(message)
+    //     messageList.innerHTML += `<h3>${json.username}</h3><p>${newDateTime}</p>
+    //     <p data-id="${message.id}">${message.translation}</p>`
+    // })
     // console.log(id)
 }
+
 function submitMessage(e){
     let channelId = e.target.parentElement.dataset.id
     let speechInput = document.getElementById('speech-input')
-    speechInput.value = ""
-
+    speechInput.value = " "
+   
     const msg = {
         "command":"message",
         "identifier":"{\"channel\":\"RoomChannel\"}",
