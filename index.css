@@ -1,0 +1,150 @@
+/* body {
+    background: url('https://iwl.virginia.edu/sites/iwl.virginia.edu/files/styles/iwl_homepage_image_rotator_full/public/homepage_slide/languages.jpg?itok=O_ToQlSKg');
+    background-repeat: no-repeat;
+    background-size: 100vh;
+} */
+
+.my-message {
+    background-color: powderblue;
+    color: black;
+    border-color: black;
+    border-style: solid;
+    margin-left: 500px;
+    padding: 20px;
+    border-radius: 25px;
+    position: right
+}
+/* 
+.back-image {
+    background: url('https://upload.wikimedia.org/wikipedia/en/thumb/c/c3/Flag_of_France.svg/1200px-Flag_of_France.svg.png') no-repeat;
+} */
+
+.btn {
+    border-color: black;
+    border-style: solid;
+    padding: 20px;
+    border-radius: 25px;
+}
+
+.other-message {
+    background-color:#90EE90;
+    color: black;
+    border-color: black;
+    border-style: solid;
+    margin-right: 500px;
+    padding: 20px;
+    border-radius: 25px;
+    position: left
+}
+
+.Polish {
+    background: url('https://upload.wikimedia.org/wikipedia/en/1/12/Flag_of_Poland.svg') no-repeat;
+    background-size: contain;
+    text-align: center;
+}
+
+.French {
+    background: url('https://upload.wikimedia.org/wikipedia/en/thumb/c/c3/Flag_of_France.svg/1200px-Flag_of_France.svg.png') no-repeat;
+    background-size: contain;
+    text-align: center;
+}
+
+.German {
+    background: url('https://upload.wikimedia.org/wikipedia/en/thumb/b/ba/Flag_of_Germany.svg/1280px-Flag_of_Germany.svg.png') no-repeat;
+    background-size: contain;
+    text-align: center;
+}
+
+.Italian {
+    background: url('https://upload.wikimedia.org/wikipedia/en/0/03/Flag_of_Italy.svg') no-repeat;
+    background-size: contain;
+    text-align: center;
+}
+
+.Arabic {
+    background: url('http://flags.fmcdn.net/data/flags/w580/ma.png') no-repeat;
+    background-size: contain;
+    text-align: center;
+}
+
+.Punjabi {
+    background: url('https://www.mapsofindia.com/maps/india/india-flag-a4.jpg') no-repeat;
+    background-size: contain;
+    text-align: center;
+}
+
+.Spain {
+    background: url('https://upload.wikimedia.org/wikipedia/en/thumb/9/9a/Flag_of_Spain.svg/1280px-Flag_of_Spain.svg.png') no-repeat;
+    background-size: contain;
+    text-align: center;
+}
+
+.French-button {
+    background: url('https://upload.wikimedia.org/wikipedia/en/thumb/c/c3/Flag_of_France.svg/1200px-Flag_of_France.svg.png') no-repeat;
+    background-size: contain;
+    text-align: center;
+    border-color: black;
+    border-style: solid;
+    padding: 20px;
+    border-radius: 25px;
+}
+
+.Polish-button {
+    background: url('https://upload.wikimedia.org/wikipedia/en/1/12/Flag_of_Poland.svg') no-repeat;
+    background-size: contain;
+    text-align: center;
+    border-color: black;
+    border-style: solid;
+    padding: 20px;
+    border-radius: 25px;
+}
+
+.Italian-button {
+    background: url('https://upload.wikimedia.org/wikipedia/en/0/03/Flag_of_Italy.svg') no-repeat;
+    background-size: contain;
+    text-align: center;
+    border-color: black;
+    border-style: solid;
+    padding: 20px;
+    border-radius: 25px;
+}
+
+.Arabic-button {
+    background: url('http://flags.fmcdn.net/data/flags/w580/ma.png') no-repeat;
+    background-size: contain;
+    text-align: center;
+    border-color: black;
+    border-style: solid;
+    padding: 20px;
+    border-radius: 25px;
+}
+
+.Spanish-button {
+    background: url('https://upload.wikimedia.org/wikipedia/en/thumb/9/9a/Flag_of_Spain.svg/1280px-Flag_of_Spain.svg.png') no-repeat;
+    background-size: contain;
+    text-align: center;
+    border-color: black;
+    border-style: solid;
+    padding: 20px;
+    border-radius: 25px;
+}
+
+.Punjabi-button {
+    background: url('https://www.mapsofindia.com/maps/india/india-flag-a4.jpg') no-repeat;
+    background-size: contain;
+    text-align: center;
+    border-color: black;
+    border-style: solid;
+    padding: 20px;
+    border-radius: 25px;
+}
+
+.German-button {
+    background: url('https://upload.wikimedia.org/wikipedia/en/thumb/b/ba/Flag_of_Germany.svg/1280px-Flag_of_Germany.svg.png') no-repeat;
+    background-size: contain;
+    text-align: center;
+    border-color: black;
+    border-style: solid;
+    padding: 20px;
+    border-radius: 25px;
+}

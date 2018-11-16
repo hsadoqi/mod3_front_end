@@ -29,21 +29,24 @@ function openConnection() {
 
 function welcome(){
     document.addEventListener("click", doThings)
-    // head.innerHTML += `<style>
-    // body {background: url("https://ied.eu/wp-content/uploads/2017/05/language.jpg")}
-    // </style>`
-    body.style.background = "url('https://ied.eu/wp-content/uploads/2017/05/language.jpg')"
-    body.innerHTML = `<h1> Welcome! </h1>`
-    body.innerHTML += `<button id="sign-in">Sign In</button>
-    <button id="create-username">New User</button>`
+
+    // body.style.background = "url('https://iwl.virginia.edu/sites/iwl.virginia.edu/files/styles/iwl_homepage_image_rotator_full/public/homepage_slide/languages.jpg?itok=O_ToQlSKg')"
+    // body.style.backgroundRepeat = 'no-repeat'
+    // body.style.backgroundSize = 1
+
+    body.innerHTML = `<h1 style="text-align:center"> Welcome! </h1>`
+    body.innerHTML += `<center><div><img src="https://ied.eu/wp-content/uploads/2017/05/language.jpg"></div></center>`
+    body.innerHTML += `<center><button id="sign-in" class="btn">Sign In</button>
+    <button id="create-username" class="btn">New User</button></center>`
     let signInButton = document.getElementById('sign-in')
     signInButton.addEventListener('click', signInUser)
 }
 
 function signInUser(e){
     body.innerHTML = `<div style="text-align:center"><h1>Please Enter Username</h1>
-    <input id="enter-username"></input>
-    <button id="submit-username">Submit</button></div>`
+    <input id="enter-username" class="btn"></input>
+    <button id="submit-username" class="btn">Submit</button></div>
+    <center><div><img src="https://ied.eu/wp-content/uploads/2017/05/language.jpg"></div></center>`
     let input = document.getElementById('enter-username')
     let button = document.getElementById('submit-username')
     button.addEventListener('click', function(){
@@ -68,9 +71,9 @@ function searchForUser(value){
 }
 
 function createNewUser(e){
-    body.innerHTML = `<h1>Create New User</h1>
-    <input id="enter-username"></input>
-    <button id="submit-username">Submit</button>`
+    body.innerHTML = `<center><h1>Create New User</h1>
+    <input id="enter-username" class="btn"></input>
+    <button id="submit-username" class="btn">Submit</button></center>`
 
     let input = document.getElementById('enter-username')
     let button = document.getElementById('submit-username')
@@ -93,16 +96,14 @@ function createNewUser(e){
 }
 
 function init(){
-    body.innerHTML = ` <h1>Channels</h1>
+    body.innerHTML = `
     <div id="channel-container">
         <ul id="channel-list"></ul>
     </div>
     <blockquote class="blockquote">
         <div class="form-collection">
         </div>
-        <button id="create-channel">Create New Channel</button>
     </blockquote>`
-    body.style.background = "rgb(255, 255, 255)"
 
     fetch(CHANNELS_URL)
     .then(res => res.json())
@@ -113,9 +114,8 @@ function init(){
 
 function displayChannel(channel){
     const channelList = document.getElementById('channel-list')
-    channelList.innerHTML += `<li data-id="${channel.id}" id="${channel.name}">${channel.name}
-    <button id="join-channel" data-id="${channel.id}">Click to Join Channel!</button>
-    <button id="delete-channel" data-id="${channel.id}">Delete channel</button></li>`
+    channelList.innerHTML += `<div id="join-channel" class="${channel.name}-button"><div data-id="${channel.id}" id="${channel.name}">${channel.name}
+    <button id="join-channel" class="btn">Join Channel</button></div></div>`
 }
 
 function doThings(e){
@@ -134,6 +134,8 @@ function doThings(e){
         createNewUser(e)
     } else if(e.target.id === 'create-channel'){
         createChannel(e)
+    } else if(e.target.id === 'all-channels'){
+        init()
     }
 }
 
@@ -202,7 +204,7 @@ function newChannel(e){
 function setChannel(e){
     // console.log(id)
     let channelId = e.target.parentElement.dataset.id
-    body.innerHTML = `<h1 data-id="${channelId}">${e.target.parentElement.id}</h1>
+    body.innerHTML = `<div class="${e.target.parentElement.id}"><h1 data-id="${channelId}">${e.target.parentElement.id}</h1></div>
     <div id="message-list"></div>`
 
     fetch(`${CHANNELS_URL}/${channelId}`)
@@ -215,15 +217,20 @@ function setChannel(e){
             return dateA - dateB //sort by date ascending
         })
         // json.messages.sort(compare)
-        sortedMessages.forEach(showMessage)
-        console.log(sortedMessages)
+        sortedMessages.forEach(function(message){
+            showMessage(message)
+            // debugger
+        })
+  
     })
 
 
     body.innerHTML += `<div id="speech-content" data-id="${channelId}">
-    <textarea id="speech-input"></textarea>
-    <button id="get-speech">Speak</button>
-    <button id="submit-speech">Translate</button></div>`
+    <textarea id="speech-input" class="btn"></textarea>
+    <button id="get-speech" class="btn">🎙</button>
+    <button id="submit-speech" class="btn">Translate</button></div>
+    <button id="all-channels"> Go back to Channels </button>`
+
 }
 
 
@@ -261,14 +268,36 @@ function getSpeech(e){
 function showMessage(message){
     let messageList = document.getElementById('message-list')
     let newDateTime = new Date(message.created_at).toLocaleString()
-    console.log(newDateTime)
-    console.log(message)
+    // console.log(newDateTime)
+    // console.log(message)
 
-    messageList.innerHTML += `<h3>${message.username}</h3><p>${newDateTime}</p>
+
+    let newMessage = document.createElement('div')
+    newMessage.dataset.id = `${message.user_id}`
+    // messageList.appendChild(newMessage)
+    newMessage.innerHTML = `<h3>${message.username}</h3>
+    <p>${newDateTime}</p>
     <p data-id="${message.id}">${message.translation}</p>`
+    console.log(newMessage)
+    // let messageContainer = document.querySelector(`div[data-id="${message.user_id}"`)
+
+    // console.log(messageContainer)
+    // console.log(id)
+    if(message.user_id !== id){
+        newMessage.className = "other-message"
+    } else {
+        // debugger;
+        newMessage.className = "my-message"
+        // debugger
+    }
+    messageList.appendChild(newMessage)
+    window.scrollTo({left: 0, top: document.body.scrollHeight, behavior: 'smooth'})
+
+    // console.log(messageContainer)
 }
 
 function submitMessage(e){
+    // console.log(e.clientY)
     let channelId = e.target.parentElement.dataset.id
     let speechInput = document.getElementById('speech-input')
     speechInput.value = " "
